@@ -15,6 +15,6 @@ module.exports = {
     // add any other environments here if necessary
   },
   settings: {
-    'import/core-modules': ['express'],
+    'import/core-modules': ['express', 'mongoose'],
   },
 };
