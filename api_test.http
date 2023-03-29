@@ -20,3 +20,23 @@ Content-type: application/json
 }
 
 ###
+
+GET http://127.0.0.1:3000/cards HTTP/1.1
+Content-type: application/json
+
+###
+
+POST http://127.0.0.1:3000/cards HTTP/1.1
+Content-type: application/json
+
+{
+  "name": "Еще Альпы",
+  "link": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/70/da/5d/hiver-2020.jpg?w=1200&h=-1&s=1"
+}
+
+###
+
+DELETE http://127.0.0.1:3000/cards/64248f2357809c564d5302e4 HTTP/1.1
+Content-type: application/json
+
+###

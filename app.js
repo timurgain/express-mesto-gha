@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const router = require('./routes/users');
+const routerUsers = require('./routes/users');
+const routerCards = require('./routes/cards')
 
 mongoose.connect('mongodb://localhost:27017/mestodb ');
 
@@ -16,6 +17,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', router);
+app.use('/users', routerUsers);
+app.use('/cards', routerCards);
 
 app.listen(PORT);
