@@ -1,19 +1,23 @@
+// eslint-disable-next-line
+const { constants } = require('http2');
 const CardModel = require('../models/card');
 
 function handleError(res, err) {
   if (err.name === 'ValidationError') {
     res
-      .status(400)
+      .status(constants.HTTP_STATUS_BAD_REQUEST)
       .send({ message: 'Переданы некорректные данные полей карточки.' });
     return;
   }
   if (err.name === 'CastError') {
     res
-      .status(404)
+      .status(constants.HTTP_STATUS_NOT_FOUND)
       .send({ message: 'Карточка с указанным _id не найдена.' });
     return;
   }
-  res.status(500).send({ message: err.message });
+  res
+    .status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+    .send({ message: err.message });
 }
 
 function getCards(req, res) {

@@ -1,19 +1,23 @@
+// eslint-disable-next-line
+const { constants } = require('http2');
 const UserModel = require('../models/user');
 
 function handleError(res, err) {
   if (err.name === 'ValidationError') {
     res
-      .status(400)
+      .status(constants.HTTP_STATUS_BAD_REQUEST)
       .send({ message: 'Переданы некорректные данные полей пользователя.' });
     return;
   }
   if (err.name === 'CastError') {
     res
-      .status(404)
+      .status(constants.HTTP_STATUS_NOT_FOUND)
       .send({ message: 'Пользователь по указанному _id не найден.' });
     return;
   }
-  res.status(500).send({ message: err.message });
+  res
+    .status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+    .send({ message: err.message });
 }
 
 function getUsers(req, res) {
@@ -45,5 +49,8 @@ function patchUserMe(req, res) {
 }
 
 module.exports = {
-  getUsers, getUserById, postUser, patchUserMe,
+  getUsers,
+  getUserById,
+  postUser,
+  patchUserMe,
 };
