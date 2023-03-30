@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const jsonParser = require('body-parser').json();
-const { getUsers, getUserById, postUser, patchUserMe } = require('../controllers/users');
+const {
+  getUsers, getUserById, postUser, patchUserMe,
+} = require('../controllers/users');
 
 router.get('/', getUsers);
 router.get('/:userId', getUserById);

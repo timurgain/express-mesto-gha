@@ -1,22 +1,38 @@
 const UserModel = require('../models/user');
 
+function handleError(res, err) {
+  if (err.name === 'ValidationError') {
+    res
+      .status(400)
+      .send({ message: 'Переданы некорректные данные полей пользователя.' });
+    return;
+  }
+  if (err.name === 'CastError') {
+    res
+      .status(404)
+      .send({ message: 'Пользователь по указанному _id не найден.' });
+    return;
+  }
+  res.status(500).send({ message: err.message });
+}
+
 function getUsers(req, res) {
   UserModel.find({})
-    .then((users) => res.send({ users }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .then((queryObj) => res.send(queryObj))
+    .catch((err) => handleError(res, err));
 }
 
 function getUserById(req, res) {
   UserModel.findById({ _id: req.params.userId })
-    .then((user) => res.send({ user }))
-    .catch((err) => res.status(404).send({ message: err.message }));
+    .then((queryObj) => res.send(queryObj))
+    .catch((err) => handleError(res, err));
 }
 
 function postUser(req, res) {
   const { name, about, avatar } = req.body;
   UserModel.create({ name, about, avatar })
-    .then((user) => res.send(user))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .then((queryObj) => res.send(queryObj))
+    .catch((err) => handleError(res, err));
 }
 
 function patchUserMe(req, res) {
@@ -24,8 +40,10 @@ function patchUserMe(req, res) {
     returnDocument: 'after',
     runValidators: true,
   })
-    .then((patchedUser) => res.send(patchedUser))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .then((queryObj) => res.send(queryObj))
+    .catch((err) => handleError(res, err));
 }
 
-module.exports = { getUsers, getUserById, postUser, patchUserMe };
+module.exports = {
+  getUsers, getUserById, postUser, patchUserMe,
+};
