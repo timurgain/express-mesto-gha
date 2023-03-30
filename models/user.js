@@ -16,7 +16,12 @@ const userSchema = mongoose.Schema({
   avatar: {
     type: String,
     required: true,
+    validate: {
+      validator: (value) => /^(ftp|http|https):\/\/[^ "]+$/.test(value),
+      message: 'Invalid URL format',
+    },
   },
+  __v: { type: Number, select: false },
 });
 
 module.exports = mongoose.model('user', userSchema);

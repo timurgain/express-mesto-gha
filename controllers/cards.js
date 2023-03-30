@@ -20,4 +20,30 @@ function deleteCard(req, res) {
     .catch((err) => res.status(500).send({ message: err.message }));
 }
 
-module.exports = { getCards, postCard, deleteCard };
+function putCardLike(req, res) {
+  CardModel.findByIdAndUpdate(
+    { _id: req.params.cardId },
+    { $addToSet: { likes: req.user._id } },
+    { returnDocument: 'after', runValidators: true }
+  )
+    .then((likedCard) => res.send(likedCard))
+    .catch((err) => res.status(500).send({ message: err.message }));
+}
+
+function removeCardLike(req, res) {
+  CardModel.findByIdAndUpdate(
+    { _id: req.params.cardId },
+    { $pull: { likes: req.user._id } },
+    { returnDocument: 'after', runValidators: true }
+  )
+    .then((likedCard) => res.send(likedCard))
+    .catch((err) => res.status(500).send({ message: err.message }));
+}
+
+module.exports = {
+  getCards,
+  postCard,
+  deleteCard,
+  putCardLike,
+  removeCardLike,
+};

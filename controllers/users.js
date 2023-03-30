@@ -19,4 +19,13 @@ function postUser(req, res) {
     .catch((err) => res.status(500).send({ message: err.message }));
 }
 
-module.exports = { getUsers, getUserById, postUser };
+function patchUserMe(req, res) {
+  UserModel.findByIdAndUpdate({ _id: req.user._id }, req.body, {
+    returnDocument: 'after',
+    runValidators: true,
+  })
+    .then((patchedUser) => res.send(patchedUser))
+    .catch((err) => res.status(500).send({ message: err.message }));
+}
+
+module.exports = { getUsers, getUserById, postUser, patchUserMe };

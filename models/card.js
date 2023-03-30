@@ -10,6 +10,10 @@ const cardSchema = mongoose.Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator: (value) => /^(ftp|http|https):\/\/[^ "]+$/.test(value),
+      message: 'Invalid URL format',
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -27,6 +31,7 @@ const cardSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  __v: { type: Number, select: false },
 });
 
 module.exports = mongoose.model('card', cardSchema);
