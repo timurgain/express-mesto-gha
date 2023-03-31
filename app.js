@@ -1,3 +1,5 @@
+// eslint-disable-next-line
+const { constants } = require('http2');
 const express = require('express');
 const mongoose = require('mongoose');
 
@@ -19,5 +21,10 @@ app.use((req, res, next) => {
 
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
+app.use('*', (req, res) => {
+  res
+    .status(constants.HTTP_STATUS_NOT_FOUND)
+    .send({ message: 'По указанному url ничего нет.' });
+});
 
 app.listen(PORT);
