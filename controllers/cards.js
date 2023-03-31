@@ -1,6 +1,7 @@
 // eslint-disable-next-line
 const { constants } = require('http2');
 const CardModel = require('../models/card');
+const { customCastErrorId } = require('./castomErrors');
 
 function handleError(res, err) {
   if (err.name === 'ValidationError') {
@@ -49,13 +50,16 @@ function deleteCard(req, res) {
 }
 
 function putCardLike(req, res) {
-  CardModel.findByIdAndUpdate(
+  CardModel.findOneAndUpdate(
     { _id: req.params.cardId },
     { $addToSet: { likes: req.user._id } },
     { returnDocument: 'after', runValidators: true },
   )
     .populate('owner likes')
-    .then((queryObj) => res.send(queryObj))
+    .then((queryObj) => {
+      if (!queryObj) throw customCastErrorId;
+      res.send(queryObj);
+    })
     .catch((err) => handleError(res, err));
 }
 
@@ -66,7 +70,10 @@ function removeCardLike(req, res) {
     { returnDocument: 'after', runValidators: true },
   )
     .populate('owner likes')
-    .then((queryObj) => res.send(queryObj))
+    .then((queryObj) => {
+      if (!queryObj) throw customCastErrorId;
+      res.send(queryObj);
+    })
     .catch((err) => handleError(res, err));
 }
 

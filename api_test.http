@@ -60,12 +60,12 @@ Content-type: application/json
 
 ###
 
-PUT http://127.0.0.1:3000/cards/64248ebd57809c564d5302dd/likes HTTP/1.1
+PUT http://127.0.0.1:3000/cards/6426f63463e4fa5c7e308a28/likes HTTP/1.1
 Content-type: application/json
 
 ###
 
-DELETE http://127.0.0.1:3000/cards/64248ebd57809c564d5302dd/likes HTTP/1.1
+DELETE http://127.0.0.1:3000/cards/6426f63463e4fa5c7e308a28/likes HTTP/1.1
 Content-type: application/json
 
 ###
