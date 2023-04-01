@@ -1,23 +1,9 @@
 const { constants } = require('http2');
 const UserModel = require('../models/user');
+const { NullQueryResultError } = require('./castomErrors');
+const { handleError } = require('./utils');
 
-function handleError(res, err) {
-  if (err.name === 'ValidationError') {
-    res
-      .status(constants.HTTP_STATUS_BAD_REQUEST)
-      .send({ message: 'Переданы некорректные данные полей пользователя.' });
-    return;
-  }
-  if (err.name === 'CastError') {
-    res
-      .status(constants.HTTP_STATUS_NOT_FOUND)
-      .send({ message: 'Пользователь по указанному _id не найден.' });
-    return;
-  }
-  res
-    .status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-    .send({ message: 'Произошла ошибка на сервере.' });
-}
+const ENTITY = 'пользователь';
 
 function getUsers(req, res) {
   UserModel.find({})
@@ -27,8 +13,11 @@ function getUsers(req, res) {
 
 function getUserById(req, res) {
   UserModel.findById({ _id: req.params.userId })
-    .then((queryObj) => res.send(queryObj))
-    .catch((err) => handleError(res, err));
+    .then((queryObj) => {
+      if (!queryObj) throw new NullQueryResultError();
+      res.send(queryObj);
+    })
+    .catch((err) => handleError(res, err, ENTITY));
 }
 
 function postUser(req, res) {
@@ -37,7 +26,7 @@ function postUser(req, res) {
     .then((queryObj) =>
       res.status(constants.HTTP_STATUS_CREATED).send(queryObj)
     )
-    .catch((err) => handleError(res, err));
+    .catch((err) => handleError(res, err, ENTITY));
 }
 
 function patchUserMe(req, res) {
@@ -49,8 +38,11 @@ function patchUserMe(req, res) {
       runValidators: true,
     }
   )
-    .then((queryObj) => res.send(queryObj))
-    .catch((err) => handleError(res, err));
+    .then((queryObj) => {
+      if (!queryObj) throw new NullQueryResultError();
+      res.send(queryObj);
+    })
+    .catch((err) => handleError(res, err, ENTITY));
 }
 
 function patchUserMeAvatar(req, res) {
@@ -62,8 +54,11 @@ function patchUserMeAvatar(req, res) {
       runValidators: true,
     }
   )
-    .then((queryObj) => res.send(queryObj))
-    .catch((err) => handleError(res, err));
+    .then((queryObj) => {
+      if (!queryObj) throw new NullQueryResultError();
+      res.send(queryObj);
+    })
+    .catch((err) => handleError(res, err, ENTITY));
 }
 
 module.exports = {

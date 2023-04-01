@@ -1,5 +1,8 @@
-const customCastErrorId = new Error('_id not found');
-customCastErrorId.name = 'CastError';
-customCastErrorId.path = '_id';
+class NullQueryResultError extends Error {
+  constructor(message='Null query result') {
+    super(message);
+    this.name = 'NullQueryResultError'
+  }
+}
 
-module.exports = { customCastErrorId };
+module.exports = { NullQueryResultError }
