@@ -1,5 +1,5 @@
 class NullQueryResultError extends Error {
-  constructor(message='Null query result') {
+  constructor(message='Query result is null') {
     super(message);
     this.name = 'NullQueryResultError'
   }

@@ -13,8 +13,8 @@ function handleError(res, err, entity) {
   }
   if (err instanceof mongoose.Error.CastError && err.path === 'owner') {
     res
-      .status(constants.HTTP_STATUS_BAD_REQUEST)
-      .send({ message: `Объект ${entity}: нет прав на изменение.` });
+      .status(constants.HTTP_STATUS_FORBIDDEN)
+      .send({ message: `Объект ${entity}: не прав на изменение.` });
     return;
   }
   if (err instanceof mongoose.Error.CastError && err.path === '_id') {

@@ -3,7 +3,7 @@ const CardModel = require('../models/card');
 const { NullQueryResultError } = require('./castomErrors');
 const { handleError } = require('./utils');
 
-const ENTITY = 'карточка';
+const ENTITY = 'Card';
 
 function getCards(req, res) {
   CardModel.find({})

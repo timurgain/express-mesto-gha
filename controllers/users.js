@@ -3,7 +3,7 @@ const UserModel = require('../models/user');
 const { NullQueryResultError } = require('./castomErrors');
 const { handleError } = require('./utils');
 
-const ENTITY = 'пользователь';
+const ENTITY = 'User';
 
 function getUsers(req, res) {
   UserModel.find({})
@@ -29,15 +29,11 @@ function postUser(req, res) {
     .catch((err) => handleError(res, err, ENTITY));
 }
 
-function patchUserMe(req, res) {
-  UserModel.findByIdAndUpdate(
-    { _id: req.user._id },
-    { name: req.body.name, about: req.body.about },
-    {
-      returnDocument: 'after',
-      runValidators: true,
-    }
-  )
+function updateUser(req, res, data) {
+  UserModel.findByIdAndUpdate({ _id: req.user._id }, data, {
+    returnDocument: 'after',
+    runValidators: true,
+  })
     .then((queryObj) => {
       if (!queryObj) throw new NullQueryResultError();
       res.send(queryObj);
@@ -45,20 +41,12 @@ function patchUserMe(req, res) {
     .catch((err) => handleError(res, err, ENTITY));
 }
 
+function patchUserMe(req, res) {
+  updateUser(req, res, { name: req.body.name, about: req.body.about });
+}
+
 function patchUserMeAvatar(req, res) {
-  UserModel.findByIdAndUpdate(
-    { _id: req.user._id },
-    { avatar: req.body.avatar },
-    {
-      returnDocument: 'after',
-      runValidators: true,
-    }
-  )
-    .then((queryObj) => {
-      if (!queryObj) throw new NullQueryResultError();
-      res.send(queryObj);
-    })
-    .catch((err) => handleError(res, err, ENTITY));
+  updateUser(req, res, { avatar: req.body.avatar });
 }
 
 module.exports = {
