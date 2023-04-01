@@ -3,15 +3,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 
-const { PORT = 3000 } = process.env;
+const config = require('./config');
+const routes = require('./routes/index');
 
-const routerUsers = require('./routes/users');
-const routerCards = require('./routes/cards');
+// connect mongo
+const {
+  db: { host, port, name },
+} = config;
+mongoose.connect(`mongodb://${host}:${port}/${name}`);
 
-mongoose.connect('mongodb://localhost:27017/mestodb ');
-
+// make app
 const app = express();
-app.use(morgan('tiny')); // logger
+
+// use logger
+app.use(morgan('tiny'));
 
 // temporary user while auth is not ready
 app.use((req, res, next) => {
@@ -21,12 +26,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', routerUsers);
-app.use('/cards', routerCards);
-app.use('*', (req, res) => {
-  res
-    .status(constants.HTTP_STATUS_NOT_FOUND)
-    .send({ message: 'По указанному url ничего нет.' });
-});
+// use routes
+app.use('/', routes);
 
-app.listen(PORT);
+app.listen(config.app.port);
