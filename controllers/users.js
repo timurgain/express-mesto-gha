@@ -16,7 +16,7 @@ function handleError(res, err) {
   }
   res
     .status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-    .send({ message: err.message });
+    .send({ message: 'Произошла ошибка на сервере.' });
 }
 
 function getUsers(req, res) {
@@ -34,7 +34,7 @@ function getUserById(req, res) {
 function postUser(req, res) {
   const { name, about, avatar } = req.body;
   UserModel.create({ name, about, avatar })
-    .then((queryObj) => res.send(queryObj))
+    .then((queryObj) => res.status(constants.HTTP_STATUS_CREATED).send(queryObj))
     .catch((err) => handleError(res, err));
 }
 

@@ -1,6 +1,7 @@
 const { constants } = require('http2');
 const express = require('express');
 const mongoose = require('mongoose');
+const morgan = require('morgan');  // logger
 
 const routerUsers = require('./routes/users');
 const routerCards = require('./routes/cards');
@@ -9,6 +10,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb ');
 
 const app = express();
 const { PORT = 3000 } = process.env;
+
+app.use(morgan('tiny'));
 
 // temporary user while auth is not ready
 app.use((req, res, next) => {

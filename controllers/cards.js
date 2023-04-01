@@ -23,7 +23,7 @@ function handleError(res, err) {
   }
   res
     .status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-    .send({ message: err.message });
+    .send({ message: 'Произошла ошибка на сервере.' });
 }
 
 function getCards(req, res) {
@@ -37,14 +37,14 @@ function postCard(req, res) {
   const { name, link } = req.body;
   const owner = req.user._id;
   CardModel.create({ name, link, owner })
-    .then((queryObj) => res.send(queryObj))
+    .then((queryObj) => res.status(constants.HTTP_STATUS_CREATED).send(queryObj))
     .catch((err) => handleError(res, err));
 }
 
 function deleteCard(req, res) {
   CardModel.findOneAndDelete({ _id: req.params.cardId, owner: req.user._id })
     .populate('owner likes')
-    .then((queryObj) => res.send(queryObj))
+    .then((queryObj) => res.status(constants.HTTP_STATUS_NO_CONTENT).send(queryObj))
     .catch((err) => handleError(res, err));
 }
 
@@ -52,7 +52,7 @@ function putCardLike(req, res) {
   CardModel.findOneAndUpdate(
     { _id: req.params.cardId },
     { $addToSet: { likes: req.user._id } },
-    { returnDocument: 'after', runValidators: true },
+    { returnDocument: 'after' },
   )
     .populate('owner likes')
     .then((queryObj) => {
@@ -66,7 +66,7 @@ function removeCardLike(req, res) {
   CardModel.findByIdAndUpdate(
     { _id: req.params.cardId },
     { $pull: { likes: req.user._id } },
-    { returnDocument: 'after', runValidators: true },
+    { returnDocument: 'after' },
   )
     .populate('owner likes')
     .then((queryObj) => {
