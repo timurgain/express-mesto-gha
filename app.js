@@ -1,4 +1,3 @@
-// eslint-disable-next-line
 const { constants } = require('http2');
 const express = require('express');
 const mongoose = require('mongoose');
