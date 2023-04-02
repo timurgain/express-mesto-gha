@@ -14,7 +14,7 @@ function handleError(res, err, entity) {
   if (err instanceof mongoose.Error.CastError && err.path === 'owner') {
     res
       .status(constants.HTTP_STATUS_FORBIDDEN)
-      .send({ message: `Объект ${entity}: не прав на изменение.` });
+      .send({ message: `Объект ${entity}: неверный _id в поле owner.` });
     return;
   }
   if (err instanceof mongoose.Error.CastError && err.path === '_id') {

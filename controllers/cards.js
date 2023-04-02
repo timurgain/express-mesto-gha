@@ -32,12 +32,10 @@ function deleteCard(req, res) {
     .catch((err) => handleError(res, err, ENTITY));
 }
 
-function putCardLike(req, res) {
-  CardModel.findOneAndUpdate(
-    { _id: req.params.cardId },
-    { $addToSet: { likes: req.user._id } },
-    { returnDocument: 'after' }
-  )
+function updateCard(req, res, data) {
+  CardModel.findOneAndUpdate({ _id: req.params.cardId }, data, {
+    returnDocument: 'after',
+  })
     .populate('owner likes')
     .then((queryObj) => {
       if (!queryObj) throw new NullQueryResultError();
@@ -46,18 +44,12 @@ function putCardLike(req, res) {
     .catch((err) => handleError(res, err, ENTITY));
 }
 
+function putCardLike(req, res) {
+  updateCard(req, res, { $addToSet: { likes: req.user._id } });
+}
+
 function removeCardLike(req, res) {
-  CardModel.findByIdAndUpdate(
-    { _id: req.params.cardId },
-    { $pull: { likes: req.user._id } },
-    { returnDocument: 'after' }
-  )
-    .populate('owner likes')
-    .then((queryObj) => {
-      if (!queryObj) throw new NullQueryResultError();
-      res.send(queryObj);
-    })
-    .catch((err) => handleError(res, err, ENTITY));
+  updateCard(req, res, { $pull: { likes: req.user._id } });
 }
 
 module.exports = {
