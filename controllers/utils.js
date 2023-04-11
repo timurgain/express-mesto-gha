@@ -1,14 +1,12 @@
 const mongoose = require('mongoose');
 const { constants } = require('http2');
-const { NullQueryResultError } = require('./castomErrors');
+const { NullQueryResultError, CredentialsError } = require('./castomErrors');
 
 function handleError(res, err, entity) {
   if (err instanceof mongoose.Error.ValidationError) {
-    res
-      .status(constants.HTTP_STATUS_BAD_REQUEST)
-      .send({
-        message: `Объект ${entity}: переданы некорректные данные полей.`,
-      });
+    res.status(constants.HTTP_STATUS_BAD_REQUEST).send({
+      message: `Объект ${entity}: переданы некорректные данные полей.`,
+    });
     return;
   }
   if (err instanceof mongoose.Error.CastError && err.path === 'owner') {
@@ -27,6 +25,12 @@ function handleError(res, err, entity) {
     res
       .status(constants.HTTP_STATUS_NOT_FOUND)
       .send({ message: `Объект ${entity}: не найдено.` });
+    return;
+  }
+  if (err instanceof CredentialsError) {
+    res
+      .status(constants.HTTP_STATUS_UNAUTHORIZED)
+      .send({ message: 'Неправильные почта или пароль' });
     return;
   }
   res

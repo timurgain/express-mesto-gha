@@ -1,8 +1,15 @@
 class NullQueryResultError extends Error {
-  constructor(message='Query result is null') {
+  constructor(message = 'Query result is null') {
     super(message);
-    this.name = 'NullQueryResultError'
+    this.name = 'NullQueryResultError';
   }
 }
 
-module.exports = { NullQueryResultError }
+class CredentialsError extends Error {
+  constructor(message = 'Wrong login or password') {
+    super(message);
+    this.name = 'CredentialsError';
+  }
+}
+
+module.exports = { NullQueryResultError, CredentialsError };

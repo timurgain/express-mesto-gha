@@ -5,10 +5,10 @@ module.exports = {
     'no-underscore-dangle': ['error', { allow: ['_id'] }],
     'import/no-extraneous-dependencies': [
       'error',
-      {
-        devDependencies: false,
-        dependencies: false
-      },
+      // {
+      //   devDependencies: false,
+      //   dependencies: false
+      // }
     ],
     'node/no-unpublished-require': [
       'error',

@@ -16,9 +16,7 @@ function postCard(req, res) {
   const { name, link } = req.body;
   const owner = req.user._id;
   CardModel.create({ name, link, owner })
-    .then((queryObj) =>
-      res.status(constants.HTTP_STATUS_CREATED).send(queryObj)
-    )
+    .then((queryObj) => res.status(constants.HTTP_STATUS_CREATED).send(queryObj))
     .catch((err) => handleError(res, err, ENTITY));
 }
 
