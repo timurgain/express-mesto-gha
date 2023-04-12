@@ -21,14 +21,6 @@ app.use(morgan('tiny'));
 // read current user id from jwd payload
 app.use(cookieParser());
 
-// temporary user while auth is not ready
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '64244c5daf10c7950554893d',
-//   };
-//   next();
-// });
-
 // use routes
 app.use('/', routes);
 

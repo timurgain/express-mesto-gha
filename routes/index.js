@@ -9,9 +9,11 @@ const { readCoockieCredentials } = require('../middlewares/auth');
 // registration and login
 router.post('/signin', jsonParser, login);
 router.post('/signup', jsonParser, postUser);
+
 // main app routes, required to be authenticated
 router.use('/users', readCoockieCredentials, routerUsers);
 router.use('/cards', readCoockieCredentials, routerCards);
+
 // 404, url not found
 router.use('*', (req, res) => {
   res

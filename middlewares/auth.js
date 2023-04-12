@@ -13,6 +13,9 @@ function readCoockieCredentials(req, res, next) {
       .send({ message: 'Необходима авторизация' });
   }
   req.user = payload;
+
+  // req.user = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDM2ZWQzNWYwNWM4ODZmMDU1ZWI5ODAiLCJpYXQiOjE2ODEzMjE3OTcsImV4cCI6MTY4MTkyNjU5N30.TLX5_9X0glfy7MixCBsQUM8mhcuJJikt1zmSqXioQ6U"
+
   return next();
 }
 

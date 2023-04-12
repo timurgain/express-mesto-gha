@@ -46,6 +46,15 @@ function postUser(req, res) {
     });
 }
 
+function getUserMe(req, res) {
+  // middleware.auth takes { _id: user._id } from cookie and writes in req.user
+  UserModel.findOne(req.user)
+    .then((queryObj) => {
+      if (!queryObj) throw new NullQueryResultError();
+      res.send(queryObj);
+    });
+}
+
 function updateUser(req, res, data) {
   UserModel.findByIdAndUpdate({ _id: req.user._id }, data, {
     returnDocument: 'after',
@@ -67,7 +76,7 @@ function patchUserMeAvatar(req, res) {
 }
 
 function login(req, res) {
-  UserModel.findOne({ email: req.body.email }).then((user) => {
+  UserModel.findOne({ email: req.body.email }).select('+password').then((user) => {
     if (!user) throw new CredentialsError();
     return bcrypt
       .compare(req.body.password, user.password)
@@ -89,6 +98,7 @@ module.exports = {
   getUsers,
   getUserById,
   postUser,
+  getUserMe,
   patchUserMe,
   patchUserMeAvatar,
   login,
