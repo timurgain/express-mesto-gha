@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 const { constants } = require('http2');
-const { NullQueryResultError, CredentialsError } = require('./castomErrors');
+const {
+  NullQueryResultError,
+  CredentialsError,
+  UniqueValueError,
+} = require('./castomErrors');
 
 function handleError(res, err, entity) {
   if (err instanceof mongoose.Error.ValidationError) {
@@ -31,6 +35,12 @@ function handleError(res, err, entity) {
     res
       .status(constants.HTTP_STATUS_UNAUTHORIZED)
       .send({ message: 'Неправильные почта или пароль' });
+    return;
+  }
+  if (err instanceof UniqueValueError) {
+    res
+      .status(constants.HTTP_STATUS_BAD_REQUEST)
+      .send({ message: `Объект ${entity} с такими данными уже есть в БД` });
     return;
   }
   res

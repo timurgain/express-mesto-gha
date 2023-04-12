@@ -16,6 +16,7 @@ module.exports = {
         allowModules: ['electron'],
       },
     ],
+    'max-classes-per-file': ['error', Infinity],
   },
   env: {
     node: true,

@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 
 const config = require('./config');
 const routes = require('./routes/index');
@@ -17,13 +18,16 @@ const app = express();
 // use logger
 app.use(morgan('tiny'));
 
+// read current user id from jwd payload
+app.use(cookieParser());
+
 // temporary user while auth is not ready
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64244c5daf10c7950554893d',
-  };
-  next();
-});
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '64244c5daf10c7950554893d',
+//   };
+//   next();
+// });
 
 // use routes
 app.use('/', routes);

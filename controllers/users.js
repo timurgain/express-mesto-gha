@@ -2,7 +2,11 @@ const { constants } = require('http2');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/user');
-const { NullQueryResultError, CredentialsError } = require('./castomErrors');
+const {
+  NullQueryResultError,
+  CredentialsError,
+  UniqueValueError,
+} = require('./castomErrors');
 const { handleError } = require('./utils');
 const config = require('../config');
 
@@ -27,16 +31,19 @@ function postUser(req, res) {
   const {
     email, password, name, about, avatar,
   } = req.body;
-
-  bcrypt
-    .hash(password, 10)
-    .then((hash) => {
-      UserModel.create({
-        password: hash, email, name, about, avatar,
-      });
+  UserModel.findOne({ email })
+    .then((user) => {
+      if (user) throw new UniqueValueError();
+      bcrypt
+        .hash(password, 10)
+        .then((hash) => UserModel.create({
+          password: hash, email, name, about, avatar,
+        }))
+        .then((queryObj) => res.status(constants.HTTP_STATUS_CREATED).send(queryObj));
     })
-    .then((queryObj) => res.status(constants.HTTP_STATUS_CREATED).send(queryObj))
-    .catch((err) => handleError(res, err, ENTITY));
+    .catch((err) => {
+      handleError(res, err, ENTITY);
+    });
 }
 
 function updateUser(req, res, data) {
@@ -62,7 +69,8 @@ function patchUserMeAvatar(req, res) {
 function login(req, res) {
   UserModel.findOne({ email: req.body.email }).then((user) => {
     if (!user) throw new CredentialsError();
-    return bcrypt.compare(req.body.password, user.password)
+    return bcrypt
+      .compare(req.body.password, user.password)
       .then((isMatch) => {
         if (!isMatch) throw new CredentialsError();
         const token = jwt.sign({ _id: user._id }, config.jwt.secretKey, {

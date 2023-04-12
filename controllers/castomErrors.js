@@ -12,4 +12,11 @@ class CredentialsError extends Error {
   }
 }
 
-module.exports = { NullQueryResultError, CredentialsError };
+class UniqueValueError extends Error {
+  constructor(message = 'Unique value error') {
+    super(message);
+    this.name = 'UniqueValueError';
+  }
+}
+
+module.exports = { NullQueryResultError, CredentialsError, UniqueValueError };
