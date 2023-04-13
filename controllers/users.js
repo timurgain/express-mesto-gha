@@ -6,28 +6,25 @@ const {
   NullQueryResultError,
   CredentialsError,
   UniqueValueError,
-} = require('./castomErrors');
-const { handleError } = require('./utils');
+} = require('../errors/castomErrors');
 const config = require('../config');
 
-const ENTITY = 'User';
-
-function getUsers(req, res) {
+function getUsers(req, res, next) {
   UserModel.find({})
     .then((queryObj) => res.send(queryObj))
-    .catch((err) => handleError(res, err));
+    .catch(next);
 }
 
-function getUserById(req, res) {
+function getUserById(req, res, next) {
   UserModel.findById({ _id: req.params.userId })
     .then((queryObj) => {
       if (!queryObj) throw new NullQueryResultError();
       res.send(queryObj);
     })
-    .catch((err) => handleError(res, err, ENTITY));
+    .catch(next);
 }
 
-function postUser(req, res) {
+function createUser(req, res, next) {
   const {
     email, password, name, about, avatar,
   } = req.body;
@@ -41,42 +38,39 @@ function postUser(req, res) {
         }))
         .then((queryObj) => res.status(constants.HTTP_STATUS_CREATED).send(queryObj));
     })
-    .catch((err) => {
-      handleError(res, err, ENTITY);
-    });
+    .catch(next);
 }
 
-function getUserMe(req, res) {
+function getUserMe(req, res, next) {
   // middleware.auth takes jwt from cookie and decode in req.user
   UserModel.findOne({ _id: req.user._id })
     .then((queryObj) => {
       if (!queryObj) throw new NullQueryResultError();
       res.send(queryObj);
     })
-    .catch((err) => handleError(res, err, ENTITY));
+    .catch(next);
 }
 
 function updateUser(req, res, data) {
-  UserModel.findByIdAndUpdate({ _id: req.user._id }, data, {
+  return UserModel.findByIdAndUpdate({ _id: req.user._id }, data, {
     returnDocument: 'after',
     runValidators: true,
   })
     .then((queryObj) => {
       if (!queryObj) throw new NullQueryResultError();
       res.send(queryObj);
-    })
-    .catch((err) => handleError(res, err, ENTITY));
+    });
 }
 
-function patchUserMe(req, res) {
-  updateUser(req, res, { name: req.body.name, about: req.body.about });
+function patchUserMe(req, res, next) {
+  updateUser(req, res, { name: req.body.name, about: req.body.about }).catch(next);
 }
 
-function patchUserMeAvatar(req, res) {
-  updateUser(req, res, { avatar: req.body.avatar });
+function patchUserMeAvatar(req, res, next) {
+  updateUser(req, res, { avatar: req.body.avatar }).catch(next);
 }
 
-function login(req, res) {
+function login(req, res, next) {
   UserModel.findOne({ email: req.body.email }).select('+password').then((user) => {
     if (!user) throw new CredentialsError();
     return bcrypt
@@ -90,15 +84,15 @@ function login(req, res) {
           .status(constants.HTTP_STATUS_OK)
           .cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true })
           .end();
-      })
-      .catch((err) => handleError(res, err, ENTITY));
-  });
+      });
+  })
+    .catch(next);
 }
 
 module.exports = {
   getUsers,
   getUserById,
-  postUser,
+  createUser,
   getUserMe,
   patchUserMe,
   patchUserMeAvatar,

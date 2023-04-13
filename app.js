@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 
 const config = require('./config');
 const routes = require('./routes/index');
+const errorHandler = require('./middlewares/errorHandler');
 
 // connect mongo
 const {
@@ -23,5 +24,8 @@ app.use(cookieParser());
 
 // use routes
 app.use('/', routes);
+
+// error handler
+app.use(errorHandler);
 
 app.listen(config.app.port);

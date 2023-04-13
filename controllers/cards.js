@@ -1,26 +1,23 @@
 const { constants } = require('http2');
 const CardModel = require('../models/card');
-const { NullQueryResultError, ForbiddenError } = require('./castomErrors');
-const { handleError } = require('./utils');
+const { NullQueryResultError, ForbiddenError } = require('../errors/castomErrors');
 
-const ENTITY = 'Card';
-
-function getCards(req, res) {
+function getCards(req, res, next) {
   CardModel.find({})
     .populate('owner likes')
     .then((queryObj) => res.send(queryObj))
-    .catch((err) => handleError(res, err, ENTITY));
+    .catch(next);
 }
 
-function postCard(req, res) {
+function postCard(req, res, next) {
   const { name, link } = req.body;
   const owner = req.user._id;
   CardModel.create({ name, link, owner })
     .then((queryObj) => res.status(constants.HTTP_STATUS_CREATED).send(queryObj))
-    .catch((err) => handleError(res, err, ENTITY));
+    .catch(next);
 }
 
-function deleteCard(req, res) {
+function deleteCard(req, res, next) {
   CardModel.findOne({ _id: req.params.cardId }).populate('owner')
     .then((card) => {
       if (!card) throw new NullQueryResultError();
@@ -32,27 +29,26 @@ function deleteCard(req, res) {
           res.status(constants.HTTP_STATUS_NO_CONTENT).send(queryObj);
         });
     })
-    .catch((err) => handleError(res, err, ENTITY));
+    .catch(next);
 }
 
 function updateCard(req, res, data) {
-  CardModel.findOneAndUpdate({ _id: req.params.cardId }, data, {
+  return CardModel.findOneAndUpdate({ _id: req.params.cardId }, data, {
     returnDocument: 'after',
   })
     .populate('owner likes')
     .then((queryObj) => {
       if (!queryObj) throw new NullQueryResultError();
       res.send(queryObj);
-    })
-    .catch((err) => handleError(res, err, ENTITY));
+    });
 }
 
-function putCardLike(req, res) {
-  updateCard(req, res, { $addToSet: { likes: req.user._id } });
+function putCardLike(req, res, next) {
+  updateCard(req, res, { $addToSet: { likes: req.user._id }, next }).catch(next);
 }
 
-function removeCardLike(req, res) {
-  updateCard(req, res, { $pull: { likes: req.user._id } });
+function removeCardLike(req, res, next) {
+  updateCard(req, res, { $pull: { likes: req.user._id }, next }).catch(next);
 }
 
 module.exports = {

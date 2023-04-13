@@ -17,7 +17,7 @@ POST http://127.0.0.1:3000/signin HTTP/1.1
 Content-type: application/json
 
 {
-  "email": "creator@tm.ru",
+  "email": "tm@tm.ru",
   "password": "qqqqqqqq"
 }
 
@@ -42,7 +42,7 @@ PATCH http://127.0.0.1:3000/users/me/avatar HTTP/1.1
 Content-type: application/json
 
 {
-  "avatar": "https://www.rgo.ru/sites/test"
+  "avatar": "https://www.rgo.ru/sites/test3"
 }
 
 ###
@@ -66,7 +66,7 @@ POST http://127.0.0.1:3000/cards HTTP/1.1
 Content-type: application/json
 
 {
-  "name": "Альпы User delete",
+  "name": "Альпы User",
   "link": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/70/da/5d/hiver-2020.jpg?w=1200&h=-1&s=1"
 }
 
