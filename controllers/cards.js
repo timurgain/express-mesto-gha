@@ -1,6 +1,6 @@
 const { constants } = require('http2');
 const CardModel = require('../models/card');
-const { NullQueryResultError } = require('./castomErrors');
+const { NullQueryResultError, ForbiddenError } = require('./castomErrors');
 const { handleError } = require('./utils');
 
 const ENTITY = 'Card';
@@ -21,11 +21,16 @@ function postCard(req, res) {
 }
 
 function deleteCard(req, res) {
-  CardModel.findOneAndDelete({ _id: req.params.cardId, owner: req.user._id })
-    .populate('owner likes')
-    .then((queryObj) => {
-      if (!queryObj) throw new NullQueryResultError();
-      res.status(constants.HTTP_STATUS_NO_CONTENT).send(queryObj);
+  CardModel.findOne({ _id: req.params.cardId }).populate('owner')
+    .then((card) => {
+      if (!card) throw new NullQueryResultError();
+      if (card.owner._id.toString() !== req.user._id) throw new ForbiddenError();
+      CardModel.findOneAndDelete({ _id: req.params.cardId, owner: req.user._id })
+        .populate('owner likes')
+        .then((queryObj) => {
+          if (!queryObj) throw new NullQueryResultError();
+          res.status(constants.HTTP_STATUS_NO_CONTENT).send(queryObj);
+        });
     })
     .catch((err) => handleError(res, err, ENTITY));
 }

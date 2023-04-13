@@ -47,12 +47,13 @@ function postUser(req, res) {
 }
 
 function getUserMe(req, res) {
-  // middleware.auth takes { _id: user._id } from cookie and writes in req.user
-  UserModel.findOne(req.user)
+  // middleware.auth takes jwt from cookie and decode in req.user
+  UserModel.findOne({ _id: req.user._id })
     .then((queryObj) => {
       if (!queryObj) throw new NullQueryResultError();
       res.send(queryObj);
-    });
+    })
+    .catch((err) => handleError(res, err, ENTITY));
 }
 
 function updateUser(req, res, data) {

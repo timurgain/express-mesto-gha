@@ -4,6 +4,7 @@ const {
   NullQueryResultError,
   CredentialsError,
   UniqueValueError,
+  ForbiddenError,
 } = require('./castomErrors');
 
 function handleError(res, err, entity) {
@@ -41,6 +42,12 @@ function handleError(res, err, entity) {
     res
       .status(constants.HTTP_STATUS_BAD_REQUEST)
       .send({ message: `Объект ${entity} с такими данными уже есть в БД` });
+    return;
+  }
+  if (err instanceof ForbiddenError) {
+    res
+      .status(constants.HTTP_STATUS_FORBIDDEN)
+      .send({ message: `Объект ${entity}: недостаточно прав на изменение` });
     return;
   }
   res

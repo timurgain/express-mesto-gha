@@ -19,4 +19,16 @@ class UniqueValueError extends Error {
   }
 }
 
-module.exports = { NullQueryResultError, CredentialsError, UniqueValueError };
+class ForbiddenError extends Error {
+  constructor(message = 'Not enough rights') {
+    super(message);
+    this.name = 'ForbiddenError';
+  }
+}
+
+module.exports = {
+  NullQueryResultError,
+  CredentialsError,
+  UniqueValueError,
+  ForbiddenError,
+};
