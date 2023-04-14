@@ -8,9 +8,13 @@ const {
   removeCardLike,
 } = require('../controllers/cards');
 
+const { cardInfoValidation } = require('../middlewares/validation/card');
+
+// card
 router.get('/', getCards);
-router.post('/', jsonParser, postCard);
+router.post('/', jsonParser, cardInfoValidation, postCard);
 router.delete('/:cardId', deleteCard);
+// cards likes
 router.put('/:cardId/likes', jsonParser, putCardLike);
 router.delete('/:cardId/likes', removeCardLike);
 

@@ -4,9 +4,7 @@ const config = {
     name: 'express-mesto',
   },
   db: {
-    host: 'localhost',
-    port: 27017,
-    name: 'mestodb',
+    uri: 'mongodb://localhost:27017/mestodb',
   },
   jwt: {
     secretKey: 'asdasd3esdwq23',

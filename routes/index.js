@@ -5,10 +5,11 @@ const routerUsers = require('./users');
 const routerCards = require('./cards');
 const { login, createUser } = require('../controllers/users');
 const { readCookieCredentials } = require('../middlewares/auth');
+const { signupValidation, signinValidation } = require('../middlewares/validation/user');
 
 // registration and login
-router.post('/signin', jsonParser, login);
-router.post('/signup', jsonParser, createUser);
+router.post('/signup', jsonParser, signupValidation, createUser);
+router.post('/signin', jsonParser, signinValidation, login);
 
 // main app routes, required to be authenticated
 router.use('/users', readCookieCredentials, routerUsers);
