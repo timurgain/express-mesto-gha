@@ -4,12 +4,17 @@ const {
   NullQueryResultError,
   CredentialsError,
   AuthenticationRequiredError,
-  UniqueValueError,
   ForbiddenError,
   UrlNotFoundError,
 } = require('../errors/castomErrors');
 
 function errorHandler(err, req, res, next) {
+  if (err.code === 11000) { // MongoServerError
+    res
+      .status(constants.HTTP_STATUS_CONFLICT)
+      .send({ message: 'Объект с предоставленными данными уже существует.' });
+    return;
+  }
   if (err instanceof mongoose.Error.ValidationError) {
     res.status(constants.HTTP_STATUS_BAD_REQUEST).send({
       message: 'Переданы некорректные данные полей объекта.',
@@ -44,12 +49,6 @@ function errorHandler(err, req, res, next) {
     res
       .status(constants.HTTP_STATUS_UNAUTHORIZED)
       .send({ message: 'Необходима авторизация' });
-    return;
-  }
-  if (err instanceof UniqueValueError) {
-    res
-      .status(constants.HTTP_STATUS_CONFLICT)
-      .send({ message: 'Объект с предоставленными данными уже существует.' });
     return;
   }
   if (err instanceof ForbiddenError) {

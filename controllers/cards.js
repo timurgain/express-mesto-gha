@@ -22,13 +22,9 @@ function deleteCard(req, res, next) {
     .then((card) => {
       if (!card) throw new NullQueryResultError();
       if (card.owner._id.toString() !== req.user._id) throw new ForbiddenError();
-      CardModel.findOneAndDelete({ _id: req.params.cardId, owner: req.user._id })
-        .populate('owner likes')
-        .then((queryObj) => {
-          if (!queryObj) throw new NullQueryResultError();
-          res.status(constants.HTTP_STATUS_NO_CONTENT).send(queryObj);
-        });
+      return card.deleteOne();
     })
+    .then(() => res.status(constants.HTTP_STATUS_NO_CONTENT).end())
     .catch(next);
 }
 

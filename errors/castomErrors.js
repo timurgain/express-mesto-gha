@@ -19,13 +19,6 @@ class AuthenticationRequiredError extends Error {
   }
 }
 
-class UniqueValueError extends Error {
-  constructor(message = 'Unique value error') {
-    super(message);
-    this.name = 'UniqueValueError';
-  }
-}
-
 class ForbiddenError extends Error {
   constructor(message = 'Not enough rights') {
     super(message);
@@ -40,12 +33,10 @@ class UrlNotFoundError extends Error {
   }
 }
 
-
 module.exports = {
   NullQueryResultError,
   CredentialsError,
   AuthenticationRequiredError,
-  UniqueValueError,
   ForbiddenError,
   UrlNotFoundError,
 };

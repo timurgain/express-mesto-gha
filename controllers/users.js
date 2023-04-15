@@ -28,16 +28,13 @@ function createUser(req, res, next) {
   const {
     email, password, name, about, avatar,
   } = req.body;
-  UserModel.findOne({ email })
-    .then((user) => {
-      if (user) throw new UniqueValueError();
-      bcrypt
-        .hash(password, 10)
-        .then((hash) => UserModel.create({
-          password: hash, email, name, about, avatar,
-        }))
-        .then((queryObj) => res.status(constants.HTTP_STATUS_CREATED).send(queryObj));
-    })
+
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => UserModel.create({
+      password: hash, email, name, about, avatar,
+    }))
+    .then((queryObj) => res.status(constants.HTTP_STATUS_CREATED).send(queryObj))
     .catch(next);
 }
 
