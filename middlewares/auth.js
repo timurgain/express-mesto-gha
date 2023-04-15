@@ -1,5 +1,4 @@
 const jsonwebtoken = require('jsonwebtoken');
-const { constants } = require('http2');
 const config = require('../config');
 const { AuthenticationRequiredError } = require('../errors/castomErrors');
 

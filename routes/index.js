@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const { constants } = require('http2');
 const jsonParser = require('express').json();
 const routerUsers = require('./users');
 const routerCards = require('./cards');

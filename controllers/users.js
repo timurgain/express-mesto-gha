@@ -5,7 +5,6 @@ const UserModel = require('../models/user');
 const {
   NullQueryResultError,
   CredentialsError,
-  UniqueValueError,
 } = require('../errors/castomErrors');
 const config = require('../config');
 
@@ -34,7 +33,11 @@ function createUser(req, res, next) {
     .then((hash) => UserModel.create({
       password: hash, email, name, about, avatar,
     }))
-    .then((queryObj) => res.status(constants.HTTP_STATUS_CREATED).send(queryObj))
+    .then((user) => {
+      // explicitly excluding the password from the response, schema's "select: false" doesnt work (
+      user.password = undefined;
+      return res.status(constants.HTTP_STATUS_CREATED).send(user);
+    })
     .catch(next);
 }
 

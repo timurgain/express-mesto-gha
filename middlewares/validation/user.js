@@ -24,7 +24,21 @@ const avatarSchema = Joi.object().keys({
   avatar: Joi.string().required().uri().pattern(regExp.url),
 });
 
-// factory func
+const userIdUrlParamsSchema = Joi.object().keys({
+  userId: Joi.string().required().pattern(regExp.mongoObjectId),
+});
+
+// func fo url params validation
+function cardIdUrlParamsValidation(req, res, next) {
+  celebrate(
+    {
+      params: userIdUrlParamsSchema,
+    },
+    { abortEarly: false },
+  )(req, res, next);
+}
+
+// factory func for body validation
 function createValidationMiddleware(schema) {
   return (req, res, next) => {
     celebrate(
@@ -42,4 +56,5 @@ module.exports = {
   signupValidation: createValidationMiddleware(signupSchema),
   userInfoValidation: createValidationMiddleware(userInfoSchema),
   avatarValidation: createValidationMiddleware(avatarSchema),
+  cardIdUrlParamsValidation,
 };
