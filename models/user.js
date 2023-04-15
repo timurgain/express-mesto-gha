@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { isEmail } = require('validator');
+const { regExp } = require('../constants');
 
 const userSchema = mongoose.Schema({
   email: {
@@ -31,7 +32,7 @@ const userSchema = mongoose.Schema({
   avatar: {
     type: String,
     validate: {
-      validator: (value) => /^(ftp|http|https):\/\/[^ "]+$/.test(value),
+      validator: (value) => regExp.url.test(value),
       message: 'Invalid URL format',
     },
   },

@@ -1,47 +1,45 @@
 const { celebrate, Joi } = require('celebrate');
+const { regExp } = require('../../constants');
 
 // Schemas
 const signinSchema = Joi.object().keys({
   email: Joi.string().required().email({ minDomainSegments: 2 }),
-  password: Joi.string()
-    .required()
-    .pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/),
+  password: Joi.string().required().pattern(regExp.password),
+});
+
+const signupSchema = Joi.object().keys({
+  email: Joi.string().required().email({ minDomainSegments: 2 }),
+  password: Joi.string().required().pattern(regExp.password),
+  name: Joi.string().min(2).max(30),
+  about: Joi.string().min(2).max(30),
+  avatar: Joi.string().uri().pattern(regExp.url),
 });
 
 const userInfoSchema = Joi.object().keys({
-  name: Joi.string().min(2).max(30),
-  about: Joi.string().min(2).max(30),
-  avatar: Joi.string()
-    .uri()
-    .pattern(/^(ftp|http|https):\/\/[^ "]+#*$/),
+  name: Joi.string().required().min(2).max(30),
+  about: Joi.string().required().min(2).max(30),
 });
 
+const avatarSchema = Joi.object().keys({
+  avatar: Joi.string().required().uri().pattern(regExp.url),
+});
+
+// factory func
+function createValidationMiddleware(schema) {
+  return (req, res, next) => {
+    celebrate(
+      {
+        body: schema,
+      },
+      { abortEarly: false },
+    )(req, res, next);
+  };
+}
+
 // Validation maddlewares
-function signinValidation(req, res, next) {
-  celebrate(
-    {
-      body: signinSchema,
-    },
-    { abortEarly: false, allowUnknown: true },
-  )(req, res, next);
-}
-
-function signupValidation(req, res, next) {
-  celebrate(
-    {
-      body: signinSchema.concat(userInfoSchema),
-    },
-    { abortEarly: false, allowUnknown: true },
-  )(req, res, next);
-}
-
-function userInfoValidation(req, res, next) {
-  celebrate(
-    {
-      body: userInfoSchema,
-    },
-    { abortEarly: false, allowUnknown: true },
-  )(req, res, next);
-}
-
-module.exports = { signinValidation, signupValidation, userInfoValidation };
+module.exports = {
+  signinValidation: createValidationMiddleware(signinSchema),
+  signupValidation: createValidationMiddleware(signupSchema),
+  userInfoValidation: createValidationMiddleware(userInfoSchema),
+  avatarValidation: createValidationMiddleware(avatarSchema),
+};

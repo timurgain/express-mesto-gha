@@ -3,8 +3,10 @@ const { constants } = require('http2');
 const {
   NullQueryResultError,
   CredentialsError,
+  AuthenticationRequiredError,
   UniqueValueError,
   ForbiddenError,
+  UrlNotFoundError,
 } = require('../errors/castomErrors');
 
 function errorHandler(err, req, res, next) {
@@ -38,6 +40,12 @@ function errorHandler(err, req, res, next) {
       .send({ message: 'Неправильные почта или пароль.' });
     return;
   }
+  if (err instanceof AuthenticationRequiredError) {
+    res
+      .status(constants.HTTP_STATUS_UNAUTHORIZED)
+      .send({ message: 'Необходима авторизация' });
+    return;
+  }
   if (err instanceof UniqueValueError) {
     res
       .status(constants.HTTP_STATUS_CONFLICT)
@@ -48,6 +56,12 @@ function errorHandler(err, req, res, next) {
     res
       .status(constants.HTTP_STATUS_FORBIDDEN)
       .send({ message: 'Недостаточно прав на изменение объекта.' });
+    return;
+  }
+  if (err instanceof UrlNotFoundError) {
+    res
+      .status(constants.HTTP_STATUS_NOT_FOUND)
+      .send({ message: 'По указанному url ничего нет.' });
     return;
   }
   res

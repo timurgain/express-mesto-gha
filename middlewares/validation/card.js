@@ -1,8 +1,8 @@
 const { celebrate, Joi } = require('celebrate');
 
 const cardInfoSchema = Joi.object().keys({
-  name: Joi.string().min(2).max(30),
-  link: Joi.string()
+  name: Joi.string().required().min(2).max(30),
+  link: Joi.string().required()
     .uri()
     .pattern(/^(ftp|http|https):\/\/[^ "]+$/),
 });
@@ -12,7 +12,7 @@ function cardInfoValidation(req, res, next) {
     {
       body: cardInfoSchema,
     },
-    { abortEarly: false, allowUnknown: true },
+    { abortEarly: false },
   )(req, res, next);
 }
 

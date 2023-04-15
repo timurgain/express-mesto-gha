@@ -12,6 +12,13 @@ class CredentialsError extends Error {
   }
 }
 
+class AuthenticationRequiredError extends Error {
+  constructor(message = 'Authentication required') {
+    super(message);
+    this.name = 'AuthenticationRequiredError';
+  }
+}
+
 class UniqueValueError extends Error {
   constructor(message = 'Unique value error') {
     super(message);
@@ -26,9 +33,19 @@ class ForbiddenError extends Error {
   }
 }
 
+class UrlNotFoundError extends Error {
+  constructor(message = 'The url doesnt exist') {
+    super(message);
+    this.name = 'UrlNotFoundError';
+  }
+}
+
+
 module.exports = {
   NullQueryResultError,
   CredentialsError,
+  AuthenticationRequiredError,
   UniqueValueError,
   ForbiddenError,
+  UrlNotFoundError,
 };
