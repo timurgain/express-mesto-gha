@@ -4,15 +4,15 @@ const { AuthenticationRequiredError } = require('../errors/castomErrors');
 
 function readCookieCredentials(req, res, next) {
   const { jwt } = req.cookies;
-  if (!jwt) throw new AuthenticationRequiredError();
+  if (!jwt) next(new AuthenticationRequiredError());
   let payload;
   try {
     payload = jsonwebtoken.verify(jwt, config.jwt.secretKey);
   } catch {
-    throw new AuthenticationRequiredError();
+    next(new AuthenticationRequiredError());
   }
   req.user = payload;
-  return next();
+  next();
 }
 
 module.exports = { readCookieCredentials };

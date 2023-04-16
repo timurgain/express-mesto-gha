@@ -35,8 +35,12 @@ function createUser(req, res, next) {
     }))
     // explicitly excluding the password from the response,
     // schema option 'select: false' doesnt work in the create case :(
-    .then((user) => UserModel.findById(user._id).select('-password'))
-    .then((user) => res.status(constants.HTTP_STATUS_CREATED).send(user))
+    // .then((user) => UserModel.findById(user._id).select('-password'))
+    .then((queryObj) => {
+      const user = queryObj.toObject();
+      delete user.password;
+      res.status(constants.HTTP_STATUS_CREATED).send(user);
+    })
     .catch(next);
 }
 

@@ -16,6 +16,6 @@ router.use('/users', readCookieCredentials, routerUsers);
 router.use('/cards', readCookieCredentials, routerCards);
 
 // 404, url not found
-router.use('*', () => { throw new UrlNotFoundError(); });
+router.use('*', (req, res, next) => next(new UrlNotFoundError()));
 
 module.exports = router;
