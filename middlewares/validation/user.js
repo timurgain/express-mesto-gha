@@ -29,7 +29,7 @@ const userIdUrlParamsSchema = Joi.object().keys({
 });
 
 // func fo url params validation
-function cardIdUrlParamsValidation(req, res, next) {
+function userIdUrlParamsValidation(req, res, next) {
   celebrate(
     {
       params: userIdUrlParamsSchema,
@@ -56,5 +56,5 @@ module.exports = {
   signupValidation: createValidationMiddleware(signupSchema),
   userInfoValidation: createValidationMiddleware(userInfoSchema),
   avatarValidation: createValidationMiddleware(avatarSchema),
-  cardIdUrlParamsValidation,
+  userIdUrlParamsValidation,
 };
