@@ -3,7 +3,7 @@ const CardModel = require('../models/card');
 const { NullQueryResultError, ForbiddenError } = require('../errors/castomErrors');
 
 function getCards(req, res, next) {
-  CardModel.find({})
+  CardModel.find({ })
     .populate('owner likes')
     .then((queryObj) => res.send(queryObj))
     .catch(next);
